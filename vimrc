@@ -609,7 +609,8 @@ function! LaunchForThisGitProject(cmd)
   let dirs = split(expand('%:p:h'), '/')
   let target = '/'
   while len(dirs) != 0
-    let d = '/' . join(dirs, '/')
+    " let d = '/' . join(dirs, '/') " Unix
+    let d = join(dirs, '/') " Windows
     if isdirectory(d . '/.git')
       let target = d
       break
