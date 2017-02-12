@@ -1,8 +1,9 @@
 "
-" Derek Wyatt's Vim Configuration
+" Derek Wyatt's Vim Configuration A Fork by Mike Kim
 "
 " It's got stuff in it.
 "
+
 "-----------------------------------------------------------------------------
 " Global Stuff
 "-----------------------------------------------------------------------------
@@ -149,7 +150,7 @@ set cpoptions=ces$
 function! CustomFugitiveStatusLine()
   let status = fugitive#statusline()
   let trimmed = substitute(status, '\[Git(\(.*\))\]', '\1', '')
-  let trimmed = substitute(trimmed, '\(\w\)\w\+\ze/', '\1', '')
+  let trimmed = substitute(trimmed, '\(\w\)\w\+[_/]\ze', '\1/', '')
   let trimmed = substitute(trimmed, '/[^_]*\zs_.*', '', '')
   if len(trimmed) == 0
     return ""
@@ -367,7 +368,7 @@ nmap <silent> ,u~ :t.\|s/./\\~/g\|:nohls<cr>
 
 " Shrink the current window to fit the number of lines in the buffer.  Useful
 " for those buffers that are only a few lines
-map <silent> ,sw :execute ":resize " . line('$')<cr>
+nmap <silent> ,sw :execute ":resize " . line('$')<cr>
 
 " Use the bufkill plugin to eliminate a buffer but keep the window layout
 nmap ,bd :BD<cr>
@@ -556,7 +557,7 @@ command! -nargs=+ AgProjectRoot call AgProjectRoot(<q-args>)
 
 nmap ,sR :AgRoot --cs --java --js --config
 nmap ,sr :AgProjectRoot --cs --java --js --config
-let g:ag_prg = '$HOME/local/bin/ag'
+let g:ag_prg = '$HOME/local/bin/ag' " tofix
 let g:ag_results_mapping_replacements = {
 \   'open_and_close': '<cr>',
 \   'open': 'o',
@@ -630,6 +631,7 @@ let g:ctrlp_working_path_mode = 'rc'
 let g:ctrlp_root_markers = ['.project.root']
 " let g:ctrlp_user_command = 'find %s -type f | grep -E "\.(gradle|sbt|conf|cs|java|rb|sh|bash|py|json|js|xml)$" | grep -v -E "/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes"'
 let g:ctrlp_user_command = 'find %s -type f | grep -v -E "\.git/|/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes|\.jar$"'
+" let g:ctrlp_user_command = 'find %s -type f | grep -v -E "\.git/|/build/|/target|/project/project|\.jar$"'
 let g:ctrlp_max_depth = 30
 let g:ctrlp_max_files = 0
 let g:ctrlp_open_new_file = 'r'
@@ -664,7 +666,7 @@ let g:ConqueTerm_TERM = 'xterm'
 "-----------------------------------------------------------------------------
 " EasyTags
 "-----------------------------------------------------------------------------
-let g:home_code_dir = '/2App'
+let g:home_code_dir = '/5git'
 let g:easytags_async = 1
 let g:easytags_auto_highlight = 0
 
@@ -788,7 +790,7 @@ command! RunBranchSwitch call MaybeRunBranchSwitch()
 "-----------------------------------------------------------------------------
 function! BWipeoutAll()
   let lastbuf = bufnr('$')
-  let ids = sort(filter(range(1, bufnr('$')), 'bufexists(v:val)'))
+  let ids = sort(filter(range(1, lastbuf), 'bufexists(v:val)'))
   execute ":" . ids[0] . "," . lastbuf . "bwipeout"
   unlet lastbuf
 endfunction
