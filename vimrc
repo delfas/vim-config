@@ -7,8 +7,6 @@
 " Global Stuff
 "-----------------------------------------------------------------------------
 
-let $TMP= '/tmp'
-
 function! RunningInsideGit()
   let result = system('env | grep ^GIT_')
   if result == ""
