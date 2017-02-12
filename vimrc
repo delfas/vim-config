@@ -3,10 +3,11 @@
 "
 " It's got stuff in it.
 "
-
 "-----------------------------------------------------------------------------
 " Global Stuff
 "-----------------------------------------------------------------------------
+
+let $TMP= '/tmp'
 
 function! RunningInsideGit()
   let result = system('env | grep ^GIT_')
@@ -26,11 +27,11 @@ let g:jellybeans_overrides = {
 let g:indexer_debugLogLevel = 2
 
 " Get Vundle up and running
-set nocompatible
-filetype off 
-set runtimepath+=~/.vim/bundle/Vundle.vim
-
-call vundle#begin()
+set nocompatible               " be iMproved
+filetype off                   " required!
+set runtimepath+=$HOME/vimfiles/bundle/Vundle.vim
+call vundle#begin('$HOME/vimfiles/bundle/')
+" Set the search scan to wrap around the file
 Plugin 'henrik/vim-indexed-search'
 Plugin 'DfrankUtil'
 Plugin 'EasyMotion'
@@ -40,10 +41,6 @@ Plugin 'VisIncr'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'bufkill.vim'
 Plugin 'clones/vim-genutils'
-Plugin 'derekwyatt/vim-fswitch'
-Plugin 'derekwyatt/vim-protodef'
-Plugin 'derekwyatt/vim-scala'
-Plugin 'drmingdrmer/xptemplate'
 Plugin 'edsono/vim-matchit'
 Plugin 'elzr/vim-json'
 Plugin 'endel/vim-github-colorscheme'
@@ -52,8 +49,6 @@ Plugin 'gregsexton/gitv'
 Plugin 'jceb/vim-hier'
 Plugin 'kien/ctrlp.vim'
 Plugin 'laurentgoudet/vim-howdoi'
-" let g:raindbow_active = 1
-" Plugin 'luochen1990/rainbow'
 Plugin 'nanotech/jellybeans.vim'
 if has("gui")
   Plugin 'nathanaelkane/vim-indent-guides'
@@ -67,6 +62,7 @@ Plugin 'sjl/gundo.vim'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'vim-scripts/TwitVim'
 Plugin 'vim-scripts/gnupg.vim'
@@ -75,13 +71,21 @@ Plugin 'vim-scripts/vimwiki'
 Plugin 'vimprj'
 Plugin 'whatyouhide/vim-gotham'
 Plugin 'xolox/vim-misc'
+Plugin 'chrisbra/csv.vim'
 call vundle#end()
-filetype plugin indent on
 
-" Add xptemplate global personal directory value
-if has("unix")
-  set runtimepath+=~/.vim/xpt-personal
-endif
+filetype plugin indent on     " required!
+" To ignore plugin indent changes, instead use:
+" filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just
+" :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
 
 " Set filetype stuff to on
 filetype on
@@ -105,12 +109,26 @@ set wrapscan
 " thing but it just wasn't working out for me
 set noignorecase
 
+set shell=bash
+
 " set the forward slash to be the slash of note.  Backslashes suck
 set shellslash
 if has("unix")
   set shell=zsh
 else
-  set shell=ksh.exe
+  if has("linux")
+    set shell=ksh.exe
+  else
+    if has("win32") || has("win64") || has("win16")
+      "Then only inside this if block for windows, I test the shell value
+      "On windows, if called from cygwin or msys, the shell needs to be changed to cmd.exe
+      if &shell=~#'bash$'
+        set shell=cmd shellcmdflag=/c " sets shell to correct path for cmd.exe
+        set shellxescape-=\>
+        set shellxescape-=\&
+      endif
+    endif
+  endif
 endif
 
 " Make command line two lines high
@@ -130,10 +148,10 @@ set hidden
 " the text and replacing it
 set cpoptions=ces$
 
-function! DerekFugitiveStatusLine()
+function! CustomFugitiveStatusLine()
   let status = fugitive#statusline()
   let trimmed = substitute(status, '\[Git(\(.*\))\]', '\1', '')
-  let trimmed = substitute(trimmed, '\(\w\)\w\+[_/]\ze', '\1/', '')
+  let trimmed = substitute(trimmed, '\(\w\)\w\+\ze/', '\1', '')
   let trimmed = substitute(trimmed, '/[^_]*\zs_.*', '', '')
   if len(trimmed) == 0
     return ""
@@ -143,7 +161,7 @@ function! DerekFugitiveStatusLine()
 endfunction
 
 " Set the status line the way i like it
-set stl=%f\ %m\ %r%{DerekFugitiveStatusLine()}\ Line:%l/%L[%p%%]\ Col:%v\ Buf:#%n\ [%b][0x%B]
+set stl=%f\ %m\ %r%{CustomFugitiveStatusLine()}\ Line:%l/%L[%p%%]\ Col:%v\ Buf:#%n\ [%b][0x%B]
 
 " tell VIM to always put a status line in, even if there is only one window
 set laststatus=2
@@ -184,7 +202,7 @@ set guioptions=acg
 set timeoutlen=500
 
 " Keep some stuff in the history
-set history=100
+set history=200
 
 " These commands open folds
 set foldopen=block,insert,jump,mark,percent,quickfix,search,tag,undo
@@ -255,9 +273,6 @@ set noswapfile
 
 " Let the syntax highlighting for Java files allow cpp keywords
 let java_allow_cpp_keywords = 1
-
-" I don't want to have the default keymappings for my scala plugin evaluated
-let g:scala_use_default_keymappings = 0
 
 " System default for mappings is now the "," character
 let mapleader = ","
@@ -354,7 +369,7 @@ nmap <silent> ,u~ :t.\|s/./\\~/g\|:nohls<cr>
 
 " Shrink the current window to fit the number of lines in the buffer.  Useful
 " for those buffers that are only a few lines
-nmap <silent> ,sw :execute ":resize " . line('$')<cr>
+map <silent> ,sw :execute ":resize " . line('$')<cr>
 
 " Use the bufkill plugin to eliminate a buffer but keep the window layout
 nmap ,bd :BD<cr>
@@ -377,6 +392,10 @@ vmap <silent> ,C :<C-U>call ClearText(visual(), 1)<CR>
 
 " Make the current file executable
 nmap ,x :w<cr>:!chmod 755 %<cr>:e<cr>
+
+" Bookmark shortcuts
+nnoremap <leader>bb :Bookmark<space>
+nnoremap <leader>bf :BookmarkToRoot<space>
 
 " Digraphs
 " Alpha
@@ -434,22 +453,39 @@ let loaded_matchparen = 1
 set nocursorline
 set nocursorcolumn
 
+
 if has("mac")
   let g:main_font = "Source\\ Code\\ Pro\\ Light:h11"
   let g:small_font = "Source\\ Code\\ Pro\\ Light:h2"
 else
-  let g:main_font = "DejaVu\\ Sans\\ Mono\\ 9"
-  let g:small_font = "DejaVu\\ Sans\\ Mono\\ 2"
+    if has("win32") || has("win64") || has("win16")
+      let g:main_font = "Consolas:h11:cANSI"
+      let g:small_font = "Consolas:h10:cANSI"
+    else
+      let g:main_font = "DejaVu\\ Sans\\ Mono\\ 9"
+      let g:small_font = "DejaVu\\ Sans\\ Mono\\ 2"
+    endif
 endif
+
+if has("gui_running")
+  if has("gui_gtk2")
+    set guifont=Inconsolata\ 12
+  elseif has("gui_macvim")
+    set guifont=Menlo\ Regular:h14
+  elseif has("gui_win32")
+    set guifont=Consolas:h11:cANSI
+  endif
+endif
+
 
 "-----------------------------------------------------------------------------
 " Vimwiki
 "-----------------------------------------------------------------------------
-let g:vimwiki_list = [ { 'path': '~/code/stuff/vimwiki/TDC', 'path_html': '~/code/stuff/vimwiki/TDC_html' } ]
+let g:vimwiki_list = [ { 'path': '$HOME/code/stuff/vimwiki/TDC', 'path_html': '$HOME/code/stuff/vimwiki/TDC_html' } ]
 let g:vimwiki_hl_headers = 1
 let g:vimwiki_hl_cb_checked = 1
 nmap ,vw :VimwikiIndex<cr>
-augroup derek_vimwiki
+augroup custom_vimwiki
   au!
   au BufEnter *.wiki setlocal textwidth=100
 augroup END
@@ -520,31 +556,13 @@ endfunction
 command! -nargs=+ AgRoot call AgRoot(<q-args>)
 command! -nargs=+ AgProjectRoot call AgProjectRoot(<q-args>)
 
-nmap ,sR :AgRoot --scala --java --js
-nmap ,sr :AgProjectRoot --scala --java --js
-let g:ag_prg = '/usr/local/bin/ag'
+nmap ,sR :AgRoot --cs --java --js --config
+nmap ,sr :AgProjectRoot --cs --java --js --config
+let g:ag_prg = '$HOME/local/bin/ag'
 let g:ag_results_mapping_replacements = {
 \   'open_and_close': '<cr>',
 \   'open': 'o',
 \ }
-
-"-----------------------------------------------------------------------------
-" FSwitch mappings
-"-----------------------------------------------------------------------------
-nmap <silent> ,of :FSHere<CR>
-nmap <silent> ,ol :FSRight<CR>
-nmap <silent> ,oL :FSSplitRight<CR>
-nmap <silent> ,oh :FSLeft<CR>
-nmap <silent> ,oH :FSSplitLeft<CR>
-nmap <silent> ,ok :FSAbove<CR>
-nmap <silent> ,oK :FSSplitAbove<CR>
-nmap <silent> ,oj :FSBelow<CR>
-nmap <silent> ,oJ :FSSplitBelow<CR>
-
-"-----------------------------------------------------------------------------
-" XPTemplate settings
-"-----------------------------------------------------------------------------
-let g:xptemplate_brace_complete = ''
 
 "-----------------------------------------------------------------------------
 " TwitVim settings
@@ -562,7 +580,7 @@ function! TwitVimMappings()
     nmap <buffer> 1 :PreviousTwitter<cr>
     nmap <buffer> 2 :NextTwitter<cr>
 endfunction
-augroup derek_twitvim
+augroup custom_twitvim
   au!
   au FileType twitvim call TwitVimMappings()
 augroup END
@@ -571,7 +589,7 @@ augroup END
 " VimSokoban settings
 "-----------------------------------------------------------------------------
 " Sokoban stuff
-let g:SokobanLevelDirectory = "/home/dwyatt/.vim/bundle/vim-sokoban/VimSokoban/"
+let g:SokobanLevelDirectory = "/vimfiles/bundle/vim-sokoban/VimSokoban/"
 
 "-----------------------------------------------------------------------------
 " FuzzyFinder Settings
@@ -579,12 +597,11 @@ let g:SokobanLevelDirectory = "/home/dwyatt/.vim/bundle/vim-sokoban/VimSokoban/"
 let g:fuf_splitPathMatching = 1
 let g:fuf_maxMenuWidth = 110
 let g:fuf_timeFormat = ''
-nmap <silent> ,fv :FufFile ~/.vim/<cr>
+nmap <silent> ,fv :FufFile $HOME/vimfiles/<cr>
 nmap <silent> ,fc :FufMruCmd<cr>
 nmap <silent> ,fm :FufMruFile<cr>
 
 let g:CommandTMatchWindowAtTop = 1
-let g:make_scala_fuf_mappings = 0
 
 "-----------------------------------------------------------------------------
 " CtrlP Settings
@@ -613,9 +630,8 @@ let g:ctrlp_switch_buffer = 'E'
 let g:ctrlp_tabpage_position = 'c'
 let g:ctrlp_working_path_mode = 'rc'
 let g:ctrlp_root_markers = ['.project.root']
-" let g:ctrlp_user_command = 'find %s -type f | grep -E "\.(gradle|sbt|conf|scala|java|rb|sh|bash|py|json|js|xml)$" | grep -v -E "/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes"'
-" let g:ctrlp_user_command = 'find %s -type f | grep -v -E "\.git/|/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes|\.jar$"'
-let g:ctrlp_user_command = 'find %s -type f | grep -v -E "\.git/|/build/|/target|/project/project|\.jar$"'
+" let g:ctrlp_user_command = 'find %s -type f | grep -E "\.(gradle|sbt|conf|cs|java|rb|sh|bash|py|json|js|xml)$" | grep -v -E "/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes"'
+let g:ctrlp_user_command = 'find %s -type f | grep -v -E "\.git/|/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes|\.jar$"'
 let g:ctrlp_max_depth = 30
 let g:ctrlp_max_files = 0
 let g:ctrlp_open_new_file = 'r'
@@ -650,7 +666,7 @@ let g:ConqueTerm_TERM = 'xterm'
 "-----------------------------------------------------------------------------
 " EasyTags
 "-----------------------------------------------------------------------------
-let g:home_code_dir = '/Users/dwyatt/code'
+let g:home_code_dir = '/2App'
 let g:easytags_async = 1
 let g:easytags_auto_highlight = 0
 
@@ -663,7 +679,7 @@ function! FindCodeDirOrRoot()
   let filedir = expand('%:p:h')
   if isdirectory(filedir)
     if HasGitRepo(filedir)
-      let cmd = 'bash -c "(cd ' . filedir . '; git rev-parse --show-toplevel 2>/dev/null)"'
+      let cmd = 'bash -c ''(cd ' . filedir . ' ; git rev-parse --show-toplevel 2>/dev/null )'''
       let gitdir = system(cmd)
       if strlen(gitdir) == 0
         return '/'
@@ -679,7 +695,8 @@ function! FindCodeDirOrRoot()
 endfunction
 
 function! HasGitRepo(path)
-  let result = system('cd ' . a:path . '; git rev-parse --show-toplevel')
+  let hasgit = 'bash -c ''(cd ' . a:path . '; git rev-parse --show-toplevel 2>/dev/null )'''
+  let result = system(hasgit)
   if result =~# 'fatal:.*'
     return 0
   else
@@ -752,14 +769,18 @@ endfunction
 function! MaybeRunMakeTags()
   let root = FindCodeDirOrRoot()
   if root != "/"
-    call system("~/bin/maketags -c " . root . " &")
+    for f in [ 'tdc', 'mbus', 'era', 'config' ]
+      if isdirectory(root . "/" . f)
+        call system("cd " . root . "; $HOME/bin/maketags -c " . root . "/" . f . "&")
+      endif
+    endfor
   endif
 endfunction
 
 augroup dw_git
   au!
   au BufEnter * call MaybeRunBranchSwitch()
-  au BufWritePost *.scala,*.js,*.java,*.conf call MaybeRunMakeTags()
+  au BufWritePost *.cs,*.js,*.java,*.conf,*.config call MaybeRunMakeTags()
 augroup END
 
 command! RunBranchSwitch call MaybeRunBranchSwitch()
@@ -769,8 +790,9 @@ command! RunBranchSwitch call MaybeRunBranchSwitch()
 "-----------------------------------------------------------------------------
 function! BWipeoutAll()
   let lastbuf = bufnr('$')
-  let ids = sort(filter(range(1, lastbuf), 'bufexists(v:val)'))
+  let ids = sort(filter(range(1, bufnr('$')), 'bufexists(v:val)'))
   execute ":" . ids[0] . "," . lastbuf . "bwipeout"
+  unlet lastbuf
 endfunction
 
 if !exists('g:bufferJumpList')
@@ -903,9 +925,9 @@ command! ToggleMinimap call ToggleMinimap()
 "-----------------------------------------------------------------------------
 " Auto commands
 "-----------------------------------------------------------------------------
-augroup derek_xsd
+augroup custom_xsd
   au!
-  au BufEnter *.xsd,*.wsdl,*.xml setl tabstop=4 shiftwidth=4
+  au BufEnter *.xsd,*.wsdl,*.xml,*.json setl tabstop=4 shiftwidth=4
 augroup END
 
 augroup Binary
@@ -981,6 +1003,8 @@ endif
 "-----------------------------------------------------------------------------
 " Local system overrides
 "-----------------------------------------------------------------------------
-if filereadable($HOME . "/.vimrc.local")
-  execute "source " . $HOME . "/.vimrc.local"
+if filereadable($HOME . "/_vimrc_local")
+  execute "source " . $HOME . "/_vimrc_local"
 endif
+
+
