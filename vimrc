@@ -1,13 +1,3 @@
-"
-" Derek Wyatt's Vim Configuration A Fork by Mike Kim
-"
-" It's got stuff in it.
-"
-
-"-----------------------------------------------------------------------------
-" Global Stuff
-"-----------------------------------------------------------------------------
-
 function! RunningInsideGit()
   let result = system('env | grep ^GIT_')
   if result == ""
@@ -25,43 +15,115 @@ let g:jellybeans_overrides = {
 
 let g:indexer_debugLogLevel = 2
 
+" not a vi
+set encoding=utf-8
+
 " Get Vundle up and running
 set nocompatible               " be iMproved
 filetype off                   " required!
 set runtimepath+=$HOME/vimfiles/bundle/Vundle.vim
 call vundle#begin('$HOME/vimfiles/bundle/')
+"
 " Set the search scan to wrap around the file
 Plugin 'henrik/vim-indexed-search'
+"
+" core plugins
+"
+Plugin 'flazz/vim-colorschemes'
+Plugin 'tomasr/molokai'
+Plugin 'kien/ctrlp.vim'
+"
+" vim main plugins
+"
+Plugin 'sjl/gundo.vim'
+Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'jlanzarotta/bufexplorer'
+Plugin 'scrooloose/syntastic.git'
+Plugin 'vim-scripts/tComment'
+Plugin 'tpope/vim-surround'
+Plugin 'mileszs/ack.vim'
+Plugin 'rking/ag.vim'
+Plugin 'edsono/vim-matchit'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-repeat'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'xolox/vim-session'
+Plugin 'xolox/vim-misc'
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'godlygeek/tabular'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'rhysd/clever-f.vim'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'ervandew/supertab'
+Plugin 'mattn/emmet-vim'
+Plugin 'tpope/vim-commentary'
+"
+" togglable panels
+"
+Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-vinegar'
+Plugin 'vim-scripts/taglist.vim'
+Plugin 'majutsushi/tagbar'
+"      '
+" language vundles
+"
+Plugin 'OrangeT/vim-csharp'
+Plugin 'pangloss/vim-javascript'
+Plugin 'marijnh/tern_for_vim'
+Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'fatih/vim-go'
+Plugin 'klen/python-mode'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'vim-scripts/c.vim'
+Plugin 'tpope/vim-fireplace'
+Plugin 'hylang/vim-hy'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'nosami/grunt-init-csharpsolution' "scripting around building solutions
+Plugin 'tpope/vim-dispatch' "starts omniserer
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'tpope/vim-rails'
+Plugin 'janko-m/vim-test'
+"Plugin 'w0rp/ale' "run linters
+"
+" databases
+"
+Plugin 'vim-scripts/SQLUtilities'
+Plugin 'NagatoPain/AutoSQLUpperCase.vim'
+"
+" autocomplete
+"
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+"      '
+" snippets
+"
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
 Plugin 'DfrankUtil'
-Plugin 'EasyMotion'
 Plugin 'GEverding/vim-hocon'
 Plugin 'MarcWeber/vim-addon-completion'
 Plugin 'VisIncr'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'bufkill.vim'
 Plugin 'clones/vim-genutils'
-Plugin 'edsono/vim-matchit'
 Plugin 'elzr/vim-json'
 Plugin 'endel/vim-github-colorscheme'
-Plugin 'godlygeek/tabular'
 Plugin 'gregsexton/gitv'
 Plugin 'jceb/vim-hier'
-Plugin 'kien/ctrlp.vim'
 Plugin 'laurentgoudet/vim-howdoi'
 Plugin 'nanotech/jellybeans.vim'
+
 if has("gui")
   Plugin 'nathanaelkane/vim-indent-guides'
 endif
 Plugin 'noahfrederick/vim-hemisu'
-Plugin 'rking/ag.vim'
 Plugin 'Shougo/vimproc.vim'
 Plugin 'Shougo/unite.vim'
-Plugin 'scrooloose/nerdtree'
-Plugin 'sjl/gundo.vim'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-unimpaired'
 Plugin 'vim-scripts/TwitVim'
 Plugin 'vim-scripts/gnupg.vim'
@@ -69,22 +131,8 @@ Plugin 'vim-scripts/vim-geeknote'
 Plugin 'vim-scripts/vimwiki'
 Plugin 'vimprj'
 Plugin 'whatyouhide/vim-gotham'
-Plugin 'xolox/vim-misc'
 Plugin 'chrisbra/csv.vim'
 call vundle#end()
-
-filetype plugin indent on     " required!
-" To ignore plugin indent changes, instead use:
-" filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just
-" :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
 
 " Set filetype stuff to on
 filetype on
@@ -119,8 +167,8 @@ else
     set shell=ksh.exe
   else
     if has("win32") || has("win64") || has("win16")
-      "Then only inside this if block for windows, I test the shell value
-      "On windows, if called from cygwin or msys, the shell needs to be changed to cmd.exe
+      " Then only inside this if block for windows, I test the shell value
+      " On windows, if called from cygwin or msys, the shell needs to be changed to cmd.exe
       if &shell=~#'bash$'
         set shell=cmd shellcmdflag=/c " sets shell to correct path for cmd.exe
         set shellxescape-=\>
@@ -177,6 +225,7 @@ set showmode
 
 " Switch on syntax highlighting.
 syntax on
+
 
 " Hide the mouse pointer while typing
 set mousehide
@@ -285,7 +334,7 @@ nmap <silent> ,p :set invpaste<CR>:set paste?<CR>
 " cd to the directory containing the file in the buffer
 nmap <silent> ,cd :lcd %:h<CR>
 nmap <silent> ,cr :lcd <c-r>=FindCodeDirOrRoot()<cr><cr>
-nmap <silent> ,md :!mkdir -p %:p:h<CR>
+nmap <silent> ,md :!bash -c '(mkdir -p %:p:h)'<CR>
 
 " Turn off that stupid highlight search
 nmap <silent> ,n :nohls<CR>
@@ -305,7 +354,7 @@ map! <S-Insert> <MiddleMouse>
 
 " set text wrapping toggles
 nmap <silent> <c-/> <Plug>WimwikiIndex
-nmap <silent> ,ww :set invwrap<cr>
+nmap <silent> ,wr :set invwrap<cr>
 nmap <silent> ,wW :windo set invwrap<cr>
 
 " allow command line editing like emacs
@@ -349,7 +398,10 @@ noremap <silent> <C-0> <C-W>>
 
 " Edit the vimrc file
 nmap <silent> ,ev :e $MYVIMRC<CR>
+nmap <silent> ,eV :tabnew  $MYVIMRC<CR>
 nmap <silent> ,sv :so $MYVIMRC<CR>
+" nnoremap <leader>v :e  ~/.config/nvim/init.vim<CR>
+" nnoremap <leader>eV :tabnew  ~/.config/nvim/init.vim<CR>
 
 " Make horizontal scrolling easier
 nmap <silent> <C-o> 10zl
@@ -452,6 +504,124 @@ let loaded_matchparen = 1
 set nocursorline
 set nocursorcolumn
 
+" session management
+let g:session_directory = "~/.vim/session"
+let g:session_autoload = "no"
+let g:session_autosave = "no"
+let g:session_command_aliases = 1
+nnoremap <leader>so :OpenSession 
+nnoremap <leader>ss :SaveSession 
+nnoremap <leader>sd :DeleteSession<CR>
+nnoremap <leader>sc :CloseSession<CR>
+
+" togglables without FN keys
+nnoremap <leader>1 :GundoToggle<CR>
+set pastetoggle=<leader>2
+nnoremap <leader>3 :TlistToggle<CR>
+nnoremap <leader>4 :TagbarToggle<CR>
+nnoremap <leader>5 :NERDTreeToggle<CR>
+
+" visual reselect of just pasted
+nnoremap gp `[v`]
+
+"make enter break and do newlines
+nnoremap <CR> O<Esc>j
+nnoremap <leader>j i<CR><Esc>==
+
+"make space in normal mode add space
+nnoremap <Space> i<Space><Esc>l
+
+" better scrolling
+nnoremap <C-j> <C-d>
+nnoremap <C-k> <C-u>
+
+" consistent menu navigation
+inoremap <C-j> <C-n>
+inoremap <C-k> <C-p>
+
+" intellij style autocomplete shortcut
+inoremap <C-@> <C-x><C-o>
+inoremap <C-Space> <C-x><C-o>
+
+" ctrlP config
+" let g:ctrlp_map = "<c-p>"
+" nnoremap <leader>t :CtrlPMRU<CR>
+" nnoremap <leader>bp :CtrlPBuffer<CR>
+
+" easy motion rebinded
+" nmap <leader>f <Plug>(easymotion-f2)
+" nmap <leader>F <Plug>(easymotion-F2)
+
+
+" reload all open buffers
+nnoremap <leader>Ra :tabdo exec "windo e!"
+
+"map next-previous jumps
+nnoremap <leader>m <C-o>
+nnoremap <leader>. <C-i>
+
+" Keep search matches in the middle of the window.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" Use sane regexes
+nnoremap <leader>/ /\v
+vnoremap <leader>/ /\v
+
+" Use :Subvert search
+nnoremap <leader>// :S /
+vnoremap <leader>// :S /
+
+" Use regular replace
+nnoremap <leader>s :%s /
+vnoremap <leader>s :%s /
+
+" Use :Subvert replace
+nnoremap <leader>S :%S /
+vnoremap <leader>S :%S /
+
+" clever-f prompt
+let g:clever_f_show_prompt = 1
+let g:clever_f_across_no_line = 1
+
+" airline
+if !exists("g:airline_symbols")
+  let g:airline_symbols = {}
+endif
+let g:airline_theme="powerlineish"
+let g:airline_powerline_fonts=1
+let g:airline#extensions#branch#empty_message  =  "no .git"
+let g:airline#extensions#whitespace#enabled    =  0
+let g:airline#extensions#syntastic#enabled     =  1
+let g:airline#extensions#tabline#enabled       =  1
+let g:airline#extensions#tabline#tab_nr_type   =  1 " tab number
+let g:airline#extensions#tabline#fnamecollapse =  1 " /a/m/model.rb
+let g:airline#extensions#hunks#non_zero_only   =  1 " git gutter
+
+" YouCompleteMe
+let g:ycm_path_to_python_interpreter = 'python'
+let g:ycm_filetype_blacklist = {}
+let g:ycm_key_list_select_completion = []
+let g:ycm_key_list_previous_completion = []
+let g:ycm_key_invoke_completion = "<C-j>"
+let g:ycm_collect_identifiers_from_tags_files = 1
+
+if executable("ag")
+  let g:ackprg = "ag --nogroup --column"
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+
+" reload ctags
+nnoremap <leader>C :!ctags -R --fields=+l --exclude=.git --exclude=log --exclude=tmp *<CR><CR>
+
+" git and ack stuff
+let g:gitgutter_enabled = 1
+let g:gitgutter_realtime = 0
+let g:gitgutter_eager = 0
+nnoremap <leader>G mG:Git! 
+nnoremap <leader>g :Git 
+nnoremap <leader>A :!ag 
+nnoremap <leader>a :Ag! 
 
 if has("mac")
   let g:main_font = "Source\\ Code\\ Pro\\ Light:h11"
@@ -630,9 +800,11 @@ let g:ctrlp_switch_buffer = 'E'
 let g:ctrlp_tabpage_position = 'c'
 let g:ctrlp_working_path_mode = 'rc'
 let g:ctrlp_root_markers = ['.project.root']
-" let g:ctrlp_user_command = 'find %s -type f | grep -E "\.(gradle|sbt|conf|cs|java|rb|sh|bash|py|json|js|xml)$" | grep -v -E "/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes"'
-let g:ctrlp_user_command = 'find %s -type f | grep -v -E "\.git/|/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes|\.jar$"'
-" let g:ctrlp_user_command = 'find %s -type f | grep -v -E "\.git/|/build/|/target|/project/project|\.jar$"'
+" let g:ctrlp_user_command = 'bash -c ''(find %s -type f | grep -E "\.(gradle|sbt|conf|cs|java|rb|sh|bash|py|json|js|xml)$" | grep -v -E "/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes")'''
+" let g:ctrlp_user_command = 'bash -c ''(find %s -type f | grep -v -E "\.git/|/build/|/quickfix|/resolution-cache|/streams|/admin/target|/classes/|/test-classes/|/sbt-0.13/|/cache/|/project/target|/project/project|/test-reports|/it-classes|\.jar$")'''
+" let g:ctrlp_user_command = 'bash -c ''(find %s -type f | grep -v -E "\.git/|/build/|/target|/project/project|\.jar$")'''
+let g:ctrlp_user_command = 'dir %s /-n /b /s /a-d'  " Windows
+
 let g:ctrlp_max_depth = 30
 let g:ctrlp_max_files = 0
 let g:ctrlp_open_new_file = 'r'
@@ -676,8 +848,18 @@ let g:easytags_auto_highlight = 0
 "-----------------------------------------------------------------------------
 let g:last_known_branch = {}
 
+function! HasGitRepo(path)
+  let hasgit = 'bash -c ''(cd ' . shellescape(a:path) . '; git rev-parse --show-toplevel 2>/dev/null )'''
+  let result = system(hasgit)
+  if result =~# 'fatal:.*'
+    return 0
+  else
+    return 1
+  endif
+endfunction
+
 function! FindCodeDirOrRoot()
-  let filedir = expand('%:p:h')
+  let filedir = shellescape(expand('%:p:h'))
   if isdirectory(filedir)
     if HasGitRepo(filedir)
       let cmd = 'bash -c ''(cd ' . filedir . ' ; git rev-parse --show-toplevel 2>/dev/null )'''
@@ -692,16 +874,6 @@ function! FindCodeDirOrRoot()
     endif
   else
     return '/'
-  endif
-endfunction
-
-function! HasGitRepo(path)
-  let hasgit = 'bash -c ''(cd ' . a:path . '; git rev-parse --show-toplevel 2>/dev/null )'''
-  let result = system(hasgit)
-  if result =~# 'fatal:.*'
-    return 0
-  else
-    return 1
   endif
 endfunction
 
@@ -867,10 +1039,11 @@ function! ShortenCWD()
     endif
     let i = i + 1
   endwhile
-  exec ":lcd /" . newdir
+  " exec ":lcd /" . newdir
+  exec ":lcd " . newdir
 endfunction
 
-:nmap ,sd :call ShortenCWD()<cr>
+:nmap ,nd :call ShortenCWD()<cr>
 
 function! RedirToYankRegisterF(cmd, ...)
   let cmd = a:cmd . " " . join(a:000, " ")
@@ -983,12 +1156,27 @@ iab taht       that
 iab Teh        The
 iab teh        the
 
+" show trailing whitespaces
+set list
+set listchars=tab:▸\ ,trail:¬,nbsp:.,extends:❯,precedes:❮
+augroup ListChars2
+    au!
+    autocmd filetype go set listchars+=tab:\ \ 
+    autocmd ColorScheme * hi! link SpecialKey Normal
+augroup END
+
 "-----------------------------------------------------------------------------
 " Set up the window colors and size
 "-----------------------------------------------------------------------------
 if has("gui_running")
   exe "set guifont=" . g:main_font
-  colorscheme navajo-night
+
+  " colorscheme navajo-night
+  " colorscheme candypaper
+  " colorscheme 0x7A69_dark
+  colorscheme molokai
+
+
   if !exists("g:vimrcloaded")
     winpos 0 0
     if !&diff
@@ -1000,6 +1188,7 @@ if has("gui_running")
   endif
 endif
 :nohls
+
 
 "-----------------------------------------------------------------------------
 " Local system overrides
