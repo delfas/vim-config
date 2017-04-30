@@ -1,3 +1,9 @@
+# Mike Kim's vimrc file
+
+Credits:
+https://github.com/derekwyatt/vim-config
+https://github.com/Netherdrake/Dotfiles
+
 # Derek Wyatt's Vim Configuration
 
 Yup... it's a vim configuration.
