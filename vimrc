@@ -220,6 +220,8 @@ set lazyredraw
 " set and lazyredraw is set then it's slow as molasses, so we unset this
 set showcmd
 
+set ruler
+
 " Show the current mode
 set showmode
 
@@ -250,8 +252,9 @@ set guioptions=acg
 set timeoutlen=500
 
 " Keep some stuff in the history
-set history=200
+set history=5000
 
+set foldlevelstart=99
 " These commands open folds
 set foldopen=block,insert,jump,mark,percent,quickfix,search,tag,undo
 
@@ -281,7 +284,7 @@ set textwidth=0
 set fillchars = ""
 
 " Add ignorance of whitespace to diff
-set diffopt+=iwhite
+set diffopt=iwhite,filler,vertical
 
 " Enable search highlighting
 set hlsearch
@@ -314,6 +317,7 @@ set ambiwidth=single
 set nobackup
 set nowritebackup
 set noswapfile
+set nojoinspaces
 
 " dictionary for english words
 " I don't actually use this much at all and it makes my life difficult in general
